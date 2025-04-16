@@ -1,0 +1,31 @@
+- name: Configure EC2 Instances
+  hosts: webservers
+  become: yes
+  remote_user: ec2-user 
+  tasks:
+  - name: Install Apache (httpd)
+    ansible.builtin.dnf:
+      name: httpd
+      state: present
+      update_cache: yes
+
+  - name: Start Apache service
+    ansible.builtin.service:
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: Create users
+    ansible.builtin.user:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - jenny
+      - rose
+      - jisoo
+      - lisa
+  handlers:
+    - name: Restart Apache
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
