@@ -1,0 +1,31 @@
+- hosts: kaizen
+  become: yes
+  vars:
+    hello:
+      - httpd
+      - tree
+      - unzip
+      - git
+      - wget
+    world: httpd
+    kaizen: started
+
+  tasks:
+  - name: Install packages
+    ansible.builtin.dnf:
+      name: "{{ hello }}"
+      state: present
+
+  - name: Start service apache
+    ansible.builtin.service:
+      name: "{{ world }}"
+      state: "{{ kaizen }}"
+      enabled: yes
+    notify: 
+      - Restart service apache
+
+  handlers:
+  - name: Restart service apache
+    ansible.builtin.service:
+      name: "{{ world }}"
+      state: restarted
